@@ -55,7 +55,7 @@ module.cloneAnchoredDelay = 0.1
 
 local Debris = game:GetService("Debris")
 
--- helper para obtener character
+
 local function getCharacter(player, timeout)
 	timeout = timeout or 5
 	local t0 = tick()
@@ -120,7 +120,7 @@ function module:ApplyReachToCharacter(character)
 	end
 end
 
--- Implementación simplificada de trollclear (mantengo la lógica principal, igual que tu script)
+
 function module:MaybeSetupTrollClear(player)
 	if not self.trollclear then return end
 	if not player then return end
@@ -199,7 +199,6 @@ function module:MaybeSetupTrollClear(player)
 			end
 		end)
 
-		-- comportamiento de disparo (simplificado)
 		spawn(function()
 			local char = player.Character
 			if not char then return end
@@ -236,7 +235,7 @@ function module:TryLoadExternalScript()
 	end)
 end
 
--- Start: punto de entrada (hace CLONADOS primero exactamente igual que tu LocalScript original)
+
 function module:Start(player)
 	if not player then error("ReachModule: Start requires player") end
 	local character = getCharacter(player, 5)
@@ -245,7 +244,7 @@ function module:Start(player)
 		return
 	end
 
-	-- si existe workspace.Configuration replico el comportamiento original de destruir ciertos objetos
+
 	if workspace:FindFirstChild("Configuration") then
 		pcall(function()
 			if player.Character:FindFirstChild("ClientRemotesFire") then
@@ -253,20 +252,18 @@ function module:Start(player)
 			end
 		end)
 		wait(1)
-		-- destruir LocalScripts del character (igual que en tu script original)
+
 		for _, c in pairs(player.Character:GetChildren()) do
 			if c:IsA("LocalScript") then
-				c:Destroy()
+				player.Character.ClientRemotesFire:destroy()
+				wait(0.35)
+				player.Character.LocalScript:destroy()
 			end
 		end
 	else
-		-- tu script original retornaba aquí; para mantener comportamiento similar no retornamos para evitar detener todo,
-		-- pero dejamos la eliminación de remotes igual arriba.
+
 	end
 
-
-	--self:CloneAndWeldPart(character, "Right Leg")
-	--self:CloneAndWeldPart(character, "Left Leg")
 
 
 	self:TryLoadExternalScript()
