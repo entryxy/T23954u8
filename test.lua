@@ -249,17 +249,11 @@ function module:Start(player)
 		pcall(function()
 			if player.Character:FindFirstChild("ClientRemotesFire") then
 				player.Character.ClientRemotesFire:Destroy()
+				wait(0.35)
+				player.Character.LocalScript:Destroy()
 			end
 		end)
-		wait(1)
-
-		for _, c in pairs(player.Character:GetChildren()) do
-			if c:IsA("LocalScript") then
-				player.Character.ClientRemotesFire:destroy()
-				wait(0.35)
-				player.Character.LocalScript:destroy()
-			end
-		end
+		wait(0.1)
 	else
 
 	end
