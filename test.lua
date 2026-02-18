@@ -1,7 +1,48 @@
--- ReachModule (ModuleScript)
+local players = game:GetService("Players")
+local player = players.LocalPlayer
+local character = player.Character
+local rleg = character["Right Leg"]
+
+if rleg then
+    local rlegCopy = rleg:Clone()
+    rlegCopy.Parent = rleg.Parent
+    rlegCopy.Anchored = true
+
+    local weldConstraint = Instance.new("WeldConstraint")
+    weldConstraint.Part0 = rlegCopy
+    weldConstraint.Part1 = rleg
+
+    weldConstraint.Parent = rlegCopy
+    wait(0.1)
+       rlegCopy.Anchored = false
+
+
+end
+
+local lleg = character["Left Leg"]
+
+if lleg then
+    local llegCopy = lleg:Clone()
+    llegCopy.Parent = lleg.Parent
+    llegCopy.Anchored = true
+
+    local weldConstraint = Instance.new("WeldConstraint")
+    weldConstraint.Part0 = llegCopy
+    weldConstraint.Part1 = lleg
+
+    weldConstraint.Parent = llegCopy
+
+    wait (0.1)
+    llegCopy.Anchored = false
+
+end
+
+
+
+
 local module = {}
 
--- CONFIG DEFAULTS (se pueden sobrescribir desde el LocalScript)
+
 module.reach = true
 module.reachopacity = 1
 module.legreach = true
@@ -27,8 +68,8 @@ local function getCharacter(player, timeout)
 	return player.Character
 end
 
--- **CLONADO EXACTO**: aquí está la parte replicada exactamente como en tu LocalScript original
-function module:CloneAndWeldPart(character, partName)
+
+--[[function module:CloneAndWeldPart(character, partName)
 	if not character then return end
 	local part = character:FindFirstChild(partName)
 	if part then
@@ -45,9 +86,9 @@ function module:CloneAndWeldPart(character, partName)
 		wait(0.1)
 		partCopy.Anchored = false
 	end
-end
+end]]
 
--- aplicar reach (sin tocar clonados; se hace después igual que en tu script original)
+
 function module:ApplyReachToCharacter(character)
 	if not character then return end
 
@@ -223,17 +264,17 @@ function module:Start(player)
 		-- pero dejamos la eliminación de remotes igual arriba.
 	end
 
-	-- CLONAR PIERNAS (exacto)
-	self:CloneAndWeldPart(character, "Right Leg")
-	self:CloneAndWeldPart(character, "Left Leg")
 
-	-- cargar script externo (si está configurado)
+	--self:CloneAndWeldPart(character, "Right Leg")
+	--self:CloneAndWeldPart(character, "Left Leg")
+
+
 	self:TryLoadExternalScript()
 
-	-- setup trollclear si corresponde
+
 	self:MaybeSetupTrollClear(player)
 
-	-- aplicar reach (tamaño/transparencia/massless)
+
 	self:ApplyReachToCharacter(character)
 end
 
