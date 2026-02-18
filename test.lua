@@ -267,6 +267,8 @@ function module:Start(player)
 
 
 	self:ApplyReachToCharacter(character)
+
+	-- te
 end
 
 return module
